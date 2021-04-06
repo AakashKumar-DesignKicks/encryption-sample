@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "encryption"
+    }
+  },
+  "defaultProject": "encryption",
+  "cli": {
+    "analytics": false
+  }
 }
