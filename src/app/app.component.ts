@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import * as CryptoJS from 'crypto-js';
-import JSEncrypt from 'jsencrypt';
 import * as forge from 'node-forge';
 
 @Component({
@@ -24,7 +23,17 @@ export class AppComponent implements OnInit {
   publicKey: string;
   privateKey: string;
 
+  finalRes = `XTqVs90WTtVuHDz6F7D/JaMO1CBC5y/Ciz0xjcKwJNgQnXbBzP+SSZw+gnu+hbXwNSre4ChwMjsJsBzEbc7rJfLXh2A5SUXBeIlexTaRoqiFTiYuQ2ZT5svePK49bc+yuu9P7yGOj1Ia3t5Djj1uRIMKVryBQHBEWAoqrbMHcXEUw/58/UBw3ibVMsRXBQXxx2h443H6EnwnRkqVFvWcftAX/trbCl2YgBtfxbeHHl1S1NbWaLkgCSyz0xHDbF38I6XFdePfOS1OwvM8VvFHfjCiR5sStUvULpmdbNTJzbiUSrmMSdE1ALc6RQU/1hG6DO7WTk1F20Bmpnu9d7bDokd0j5dzPIP1wEKOeJJKvnDc6svFb7OradC+uCnEqD7VvZOsVsL00rRBKtEFXOS2WRaYYzpwf/BjMz6Mv0Kb786gS4MR/yS8jtygsS5DKb5YQA6l78EStR4ml+qm9AL5wp7hyQdelBll4eDkl3KkXhrWKCNn2T4Op9qs6yEt3YpaSwpTk5DAy7vireIqpKIwq58Fp1Wlo8o5Nt680yicLlib4LLu2hnco0VKkrpjtL4vl+tm4mtDDa9VXNhkgZf1SeT2iBPOuFEbGekFeUid8ypEpLSMb0bmUcDakZuc/DcT6lcU8VplG91mGUa/6wju12X3JIFdIPqSzjroGDKFX5MzGFDntd3eNbw769h2nx8Xf2Ynjl4fplVFSPsHhY8+QHqe19osizeywFr0QozKJedfjrZ8XTysslDPnNIbrTncyNEiEzYVKOx4U+UXm6sFOA==`;
+
   constructor() {
+
+    // Code which is working for generating RSA public private keys
+
+    // const rsa = forge.pki.rsa;
+    // const keypair = rsa.generateKeyPair({bits: 2048, e: 0x10001});
+    // const publicKey = forge.pki.publicKeyToPem(keypair.publicKey);
+    // const privatekey = forge.pki.privateKeyToPem(keypair.privateKey);
+
   }
 
   ngOnInit(): void {
@@ -101,36 +110,7 @@ export class AppComponent implements OnInit {
     t12g1YLJ+Shr4dXMgigb7wvAXMn0ZA77/pG0Et5RELccGqOq5IHAdjEsUJxOWs0W
     ddnD0LyhnYDb7CJAoHtEtkJaOmtVtu41g3wVpCgY+MMtD1NGwn9D`;
 
-    this.checkRSA();
-
-  }
-
-  private checkRSA(): void {
-    const encrypt = new JSEncrypt({default_key_size: '2048'});
-    encrypt.setPublicKey(this.originalPublicKey);
-    console.log('encrypt', encrypt);
-    const encrypted = encrypt.encrypt(this.backendResponse);
-
-    console.log('this.backendResponse', this.backendResponse);
-    console.log('encrypted', encrypted);
-
-    const decrypt = new JSEncrypt({default_key_size: '2048'});
-    decrypt.setPrivateKey(this.originalPrivateKey);
-    console.log('decrypt', decrypt);
-
-    const decrypted = decrypt.decrypt(encrypted.toString());
-    console.log('decrypted', decrypted);
-
-    console.log('is Decrypted same as original key?', this.backendResponse.toString().trim() === decrypted.toString().trim());
-
-
-    // Code which is working for generating RSA public private keys
-
-    // const rsa = forge.pki.rsa;
-    // const keypair = rsa.generateKeyPair({bits: 2048, e: 0x10001});
-    // const publicKey = forge.pki.publicKeyToPem(keypair.publicKey);
-    // const privatekey = forge.pki.privateKeyToPem(keypair.privateKey);
-
+    this.finalWorkingCode();
   }
 
   convertText(conversion: string): void {
@@ -243,6 +223,35 @@ export class AppComponent implements OnInit {
     }).toString(CryptoJS.enc.Utf8);
 
     this.conversionDecryptOutput = decrypted;
+  }
+
+  private finalWorkingCode(): any {
+
+    const encryptedContent = 'VB2ZMUfXt4MWUpCupFvx7oQTY2l+KirU7BLH0WqLkeJP6/HW70iZhdfDPGrd51H8EF6sOZg0HhCcUD9abxGN1k9kaWs83Bt80xFAn4B8GCXVlga2LcBvqWvLrbk3cqDxwKlXmxzc5Yo1WOeRqv5HrwAooocJTo4ZlO+SW3EHbxlS9x9rH9nmhD0tJ3eMzeOdsw++0qxfyGNsboOuTLCrowQqm6ujCRXSj7fSnyU6AP7zbGODqbr7LZTvbdlj2tovgapjjjWbxd4QtUEcSscwoH89LYRte4f6fXvxl2K8+zRercDDVLP9Kt9Th/Yg6FzB4cT/j/ouTx1gsCupzIaKAjICcAKYhCM3nZT1JyJrQZ9QFtSdsnGuRigiP1JQPgfwoAiy5/6G9bKg34KqQOOS8BB6zv67BT/r0B7uKlFxtGIIXei26yJrLTJ15wDB09uNjt0rbfbDi4kezzyDtOWtYuSAvEziJ1ZQYqFlPuj0y3bZE1iEgkKovTGigrWSjwrskWMR7OI86hSeNU+mpWtN/0fmqmTHyt0qp3RG97gltFMzcV1DX+wqjOJCwuTjXDXIzHMPK8wDO3lOs78GQTvXZQOz32OMR0lD0MbONE6pUJK2rIswVIj/Iwolg6Yav1pgrwatxmtCjB/zUbwwsBFaxGLIBbT4gDFzdV+Chg/ovGWKGJGTUaNJiTN2skxb0I/J';
+    const parsedEncryptedContent =  atob(encryptedContent);
+    const array =  Uint8Array.from(parsedEncryptedContent, b => b.charCodeAt(0));
+
+    const encryptedAESKey = array.slice(0, 256);
+    const encryptedAESIV = array.slice(256, 512);
+    const encryptedAESContent = array.slice(512, array.length);
+    const AESContentBase64 = btoa(String.fromCharCode(...encryptedAESContent));
+
+    const decryptRsa = forge.pki.privateKeyFromPem(this.originalPrivateKey);
+    const decryptedAESKey = decryptRsa.decrypt(encryptedAESKey);
+    const decryptedAESIV = decryptRsa.decrypt(encryptedAESIV);
+
+    const parsedKey = CryptoJS.enc.Base64.parse(btoa(decryptedAESKey));
+    const parsedIV = CryptoJS.enc.Base64.parse(btoa(decryptedAESIV));
+
+    const decrypted = CryptoJS.AES.decrypt(AESContentBase64, parsedKey, {
+        iv: parsedIV,
+        padding: CryptoJS.pad.Pkcs7,
+        mode: CryptoJS.mode.CBC
+    }).toString(CryptoJS.enc.Utf8);
+
+    this.conversionDecryptOutput = decrypted;
+
+    console.log(decrypted);
   }
 
 }
