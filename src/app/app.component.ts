@@ -21,10 +21,10 @@ export class AppComponent {
 
   convertText(conversion: string): void {
       if (conversion === 'encrypt') {
-        this.encrypWay1();
+        this.encrypWay2();
       }
       else {
-        this.decryptWay1();
+        this.decryptWay2();
     }
   }
 
@@ -42,13 +42,16 @@ export class AppComponent {
    * WORKS
    */
   private encrypWay2(): void {
+    // WORKS
+    const salt = CryptoJS.lib.WordArray.random(128 / 8);
     const encryptSecretKey = this.encPassword.trim();
     const keySize = 256;
-    const salt = CryptoJS.lib.WordArray.random(16);
+
     const key = CryptoJS.PBKDF2(encryptSecretKey, salt, {
-        keySize: keySize / 32,
-        iterations: 100
+      keySize: keySize / 32,
+      iterations: 100
     });
+
     const ivParam = CryptoJS.lib.WordArray.random(128 / 8);
 
     const encrypted = CryptoJS.AES.encrypt(this.plainText.trim(), key, {
@@ -57,32 +60,32 @@ export class AppComponent {
       mode: CryptoJS.mode.CBC
     });
 
-    const result = CryptoJS.enc.Base64.stringify(salt.concat(ivParam).concat(encrypted.ciphertext));
+    // salt, iv will be hex 32 in length
+    // append them to the ciphertext for use  in decryption
+    const transitmessage = salt.toString() + ivParam.toString() + encrypted.toString();
 
-    this.conversionEncryptOutput = result;
+    this.conversionEncryptOutput = transitmessage;
   }
 
   /**
    * @description This is as per medium.com article
    * Link - https://sstarx.medium.com/encryption-and-decryption-in-angular-asp-net-core-application-1f55bfa3d8bd
-   * DOES NOT WORK
+   * WORKS
    */
   private decryptWay2(): void {
-    const keyPass = this.decPassword.trim();
-
+    // WORKS
     const keySize = 256;
-    const salt = CryptoJS.lib.WordArray.random(16);
-    const key = CryptoJS.PBKDF2(keyPass, salt, {
-        keySize: keySize / 32,
-        iterations: 100
+
+    const salt = CryptoJS.enc.Hex.parse(this.encryptText.substr(0, 32));
+    const ivParam = CryptoJS.enc.Hex.parse(this.encryptText.substr(32, 32));
+    const encrypted = this.encryptText.substring(64);
+
+    const key = CryptoJS.PBKDF2(this.decPassword.trim(), salt, {
+      keySize: keySize / 32,
+      iterations: 100
     });
-    const ivParam = CryptoJS.lib.WordArray.random(128 / 8);
 
-
-    // const key = CryptoJS.enc.Utf8.parse(keyPass);
-    // const ivParam = CryptoJS.lib.WordArray.create([0x00, 0x00, 0x00, 0x00]);
-
-    const decrypted = CryptoJS.AES.decrypt(this.encryptText.trim(), key, {
+    const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
       iv: ivParam,
       padding: CryptoJS.pad.Pkcs7,
       mode: CryptoJS.mode.CBC
